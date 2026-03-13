@@ -3,32 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3-Day Skill Challenge</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>MiniMaster AI</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div class="app-container">
+    <div class="container">
         <h1>3-Day Skill Challenge</h1>
-        <p class="subtitle">Discover a random micro-skill and master it in just 15 minutes a day.</p>
+        <p>Master a new micro-skill in 15 minutes.</p>
 
         <div class="input-group">
             <label for="category">Select a Category</label>
             <select id="category">
-                <option value="knowledge">General Knowledge</option>
-                <option value="tech">Technology & Code</option>
-                <option value="business">Business & Psychology</option>
-                <option value="survival">Survival & Life Hacks</option>
+                <option value="Digital Business">Digital Business</option>
+                <option value="Technology & AI">Technology & AI</option>
+                <option value="Psychology & Sales">Psychology & Sales</option>
+                <option value="Survival Hacks">Survival Hacks</option>
             </select>
         </div>
 
         <button id="action-btn" onclick="generateSkill()">Give Me a Skill</button>
         
-        <div class="shots-counter" id="shots-display">Daily Shots Left: 2</div>
+        <p id="shots-display">Daily Shots Left: 2</p>
 
-        <div id="result-box">
-            </div>
+        <div id="result-box" style="display: none;"></div>
     </div>
 
     <script src="script.js"></script>

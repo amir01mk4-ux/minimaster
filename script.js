@@ -1,19 +1,17 @@
-// 1. Set up the 2-Shot Limit Logic using the browser's local memory
+// 1. Set up the 2-Shot Limit Logic
 let shotsLeft = localStorage.getItem('dailyShots');
 let lastDate = localStorage.getItem('lastPlayDate');
 let today = new Date().toLocaleDateString();
 
-// Reset shots if it's a new day or if it's their first time visiting
 if (lastDate !== today || shotsLeft === null) {
     shotsLeft = 2;
     localStorage.setItem('dailyShots', shotsLeft);
     localStorage.setItem('lastPlayDate', today);
 }
 
-// Ensure shotsLeft is treated as a number
 shotsLeft = parseInt(shotsLeft, 10);
 
-// Wait for the HTML to load before updating the UI
+// Update UI when page loads
 document.addEventListener("DOMContentLoaded", () => {
     updateUI();
 });
@@ -24,17 +22,21 @@ async function generateSkill() {
         const resultBox = document.getElementById('result-box');
         const category = document.getElementById('category').value;
         
-        // Show loading state
+        // --- YOUR VAL TOWN LINK GOES HERE ---
+        // Replace the link below with the one from the top of your Val Town page
+        const valTownURL = "https://amir-randomskill.web.val.run"; 
+
         button.innerText = "Consulting AI...";
         button.disabled = true;
 
-        // --- THE AI MAGIC HAPPENS HERE ---
         try {
-            // This is where we will call the Google Gemini API later.
-            // Simulating a 1.5 second delay to feel like AI is thinking
-            await new Promise(resolve => setTimeout(resolve, 1500)); 
+            const response = await fetch(valTownURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ category: category })
+            });
             
-            const aiResponse = `Here is your random ${category} skill: <strong>The Feynman Technique</strong>. <br><br>Learn to explain complex concepts simply. Are you ready to commit to the 3-day course?`;
+            const data = await response.json();
             
             // Deduct a shot
             shotsLeft--;
@@ -42,15 +44,15 @@ async function generateSkill() {
             
             // Show the result
             resultBox.style.display = "block";
-            resultBox.innerHTML = aiResponse;
+            resultBox.innerHTML = data.result;
             
-            // Update the button based on remaining shots
             updateUI();
 
         } catch (error) {
+            console.error(error);
             resultBox.style.display = "block";
-            resultBox.innerHTML = "Oops! The AI is taking a nap. Try again.";
-            button.innerText = "Give Me a Skill";
+            resultBox.innerHTML = "Error: Check your Val Town URL and ensure it is set to 'Public'.";
+            button.innerText = "Try Again";
         }
 
         button.disabled = false;
@@ -59,7 +61,7 @@ async function generateSkill() {
 
 function startCourse() {
     const resultBox = document.getElementById('result-box');
-    resultBox.innerHTML = "Generating your custom 3-day syllabus... (Course logic coming soon!)";
+    resultBox.innerHTML = "Generating your custom 3-day syllabus... (This feature is next on our list!)";
     const button = document.getElementById('action-btn');
     button.innerText = "Generating...";
     button.disabled = true;
@@ -75,7 +77,6 @@ function updateUI() {
     
     if (shotsLeft <= 0 && button) {
          button.innerText = "Start 3-Day Course";
-         // Remove the old onclick and add the new one
          button.onclick = startCourse;
     } else if (button && shotsLeft < 2) {
          button.innerText = "Give Me Another Skill";

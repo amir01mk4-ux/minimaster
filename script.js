@@ -22,7 +22,7 @@ async function generateSkill() {
         const resultBox = document.getElementById('result-box');
         const category = document.getElementById('category').value;
         
-        // --- YOUR VAL TOWN LINK GOES HERE ---
+        // --- https://www.val.town/x/amir01mk4/untitled-463/code/main.ts ---
         // Replace the link below with the one from the top of your Val Town page
         const valTownURL = "https://amir-randomskill.web.val.run"; 
 

@@ -1,39 +1,35 @@
-// --- CONFIGURATION ---
-const valTownURL = https://amir01mk4--a3a958c41f1011f1ae3842dde27851f2.web.val.run; 
+console.log("MiniMaster Script Loaded Successfully!");
 
-// --- APP LOGIC ---
-let shotsLeft = parseInt(localStorage.getItem('dailyShots')) || 2;
-let lastDate = localStorage.getItem('lastPlayDate');
-let today = new Date().toLocaleDateString();
+let shotsLeft = parseInt(localStorage.getItem('dailyShots'));
+if (isNaN(shotsLeft)) shotsLeft = 2;
 
-// Reset shots if it's a new day
-if (lastDate !== today) {
-    shotsLeft = 2;
-    localStorage.setItem('dailyShots', shotsLeft);
-    localStorage.setItem('lastPlayDate', today);
+function updateUI() {
+    const shotsDisplay = document.getElementById('shots-display');
+    if (shotsDisplay) shotsDisplay.innerText = `Daily Shots Left: ${shotsLeft}`;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    updateUI();
-});
+// Ensure the UI updates as soon as the page opens
+window.onload = updateUI;
 
 async function generateSkill() {
+    console.log("Button Clicked!"); // This tells us the button is working
+    
     const button = document.getElementById('action-btn');
     const resultBox = document.getElementById('result-box');
     const category = document.getElementById('category').value;
+    
+    // REPLACE THIS WITH YOUR LINK
+    const valTownURL = "https://amir01mk4--a3a958c41f1011f1ae3842dde27851f2.web.val.run"; 
 
     if (shotsLeft <= 0) {
-        startCourse();
+        alert("You're out of shots! Returning tomorrow for more.");
         return;
     }
 
-    // 1. UI Loading State
-    button.innerHTML = '<span class="spinner"></span> Consulting AI...';
+    button.innerText = "Consulting AI...";
     button.disabled = true;
-    resultBox.style.display = "none";
 
     try {
-        // 2. Fetch from your Backend
         const response = await fetch(valTownURL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -41,45 +37,22 @@ async function generateSkill() {
         });
 
         const data = await response.json();
-
+        
         if (data.error) throw new Error(data.error);
 
-        // 3. Success Logic
         shotsLeft--;
         localStorage.setItem('dailyShots', shotsLeft);
         
-        resultBox.innerHTML = `
-            <div class="skill-card">
-                ${data.result}
-            </div>
-        `;
         resultBox.style.display = "block";
-        resultBox.classList.add('fade-in');
-
-    } catch (error) {
-        console.error("Connection Error:", error);
-        resultBox.innerHTML = `<p style="color: #ff4d4d;">⚠️ Connection Error: ${error.message}</p>`;
-        resultBox.style.display = "block";
-    } finally {
-        button.disabled = false;
+        resultBox.innerHTML = `<div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px;">${data.result}</div>`;
+        
         updateUI();
-    }
-}
-
-function updateUI() {
-    const shotsDisplay = document.getElementById('shots-display');
-    const button = document.getElementById('action-btn');
-    
-    if (shotsDisplay) shotsDisplay.innerText = `Daily Shots Left: ${shotsLeft}`;
-    
-    if (shotsLeft <= 0) {
-        button.innerText = "🚀 Start 3-Day Mastery Course";
-        button.classList.add('premium-btn');
-    } else {
+    } catch (error) {
+        console.error("Error:", error);
+        resultBox.style.display = "block";
+        resultBox.innerHTML = "Connection error. Please try again.";
+    } finally {
         button.innerText = "Give Me a Skill";
+        button.disabled = false;
     }
-}
-
-function startCourse() {
-    alert("Great choice! We are generating your custom 3-day syllabus. Check back in a moment!");
 }

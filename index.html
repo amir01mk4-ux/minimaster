@@ -3,29 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniMaster AI</title>
+    <title>MiniMaster AI | 3-Day Skill Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>3-Day Skill Challenge</h1>
-        <p>Master a new micro-skill in 15 minutes.</p>
 
-        <div class="input-group">
-            <label for="category">Select a Category</label>
-            <select id="category">
-                <option value="Digital Business">Digital Business</option>
-                <option value="Technology & AI">Technology & AI</option>
-                <option value="Psychology & Sales">Psychology & Sales</option>
-                <option value="Survival Hacks">Survival Hacks</option>
-            </select>
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <h1>MiniMaster <span class="ai-badge">AI</span></h1>
+            <p>Master any micro-skill in 3 days. Log in to start your journey.</p>
+            
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email Address">
+                <input type="password" id="password" placeholder="Password">
+            </div>
+
+            <div class="auth-buttons">
+                <button class="login-btn" onclick="handleLogin()">Log In</button>
+                <button class="signup-btn" onclick="handleSignup()">Sign Up</button>
+            </div>
+            <p id="auth-error" class="error-text"></p>
         </div>
+    </div>
 
-        <button id="action-btn" onclick="generateSkill()">Give Me a Skill</button>
-        
-        <p id="shots-display">Daily Shots Left: 2</p>
+    <div id="app-content" style="display: none;">
+        <nav class="navbar">
+            <div class="logo">MiniMaster</div>
+            <button class="logout-link" onclick="handleLogout()">Logout</button>
+        </nav>
 
-        <div id="result-box" style="display: none;"></div>
+        <div class="container">
+            <header>
+                <h1>3-Day Skill Challenge</h1>
+                <p>Select a category and let AI build your custom mastery plan.</p>
+            </header>
+
+            <div class="card">
+                <div class="input-group">
+                    <label for="category">Category</label>
+                    <select id="category">
+                        <option value="Digital Entrepreneurship">Digital Entrepreneurship</option>
+                        <option value="AI & Productivity">AI & Productivity</option>
+                        <option value="Psychology & Sales">Psychology & Sales</option>
+                        <option value="Creative Skills">Creative Skills</option>
+                        <option value="Survival & Life Hacks">Survival & Life Hacks</option>
+                    </select>
+                </div>
+
+                <button id="action-btn" class="primary-btn" onclick="generateSkill()">
+                    Give Me a Skill
+                </button>
+                
+                <p id="shots-display" class="shots-counter">Daily Shots Left: 2</p>
+            </div>
+
+            <div id="result-box" class="skill-result-card" style="display: none;"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>

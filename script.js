@@ -147,3 +147,12 @@ function updateUI() {
     const shotsDisplay = document.getElementById('shots-display');
     if (shotsDisplay) shotsDisplay.innerText = `Daily Shots Left: ${shotsLeft}`;
 }
+async function handleLogout() {
+    const { error } = await _supabase.auth.signOut();
+    if (error) {
+        alert(error.message);
+    } else {
+        // Refresh the page to show the login screen again
+        window.location.reload();
+    }
+}

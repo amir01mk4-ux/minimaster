@@ -137,3 +137,30 @@ strong {
     font-size: 0.85rem;
     letter-spacing: 1px;
 }
+.skill-header {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: #222;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.syllabus {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.syllabus p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.why {
+    font-size: 0.85rem;
+    color: #666;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}

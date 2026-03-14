@@ -1,4 +1,30 @@
-console.log("MiniMaster Script Loaded Successfully!");
+// Ensure we wait for the Supabase library to load from the CDN
+const supabaseUrl = 'https://pdmzwlsexixrbuiacyrr.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkbXp3bHNleGl4cmJ1aWFjeXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MDA1NDksImV4cCI6MjA4OTA3NjU0OX0.RoEyvgvLLGfwQ8kDp1N9xsJuXyC_In0hjdWRCzw3uHM';
+
+// This name MUST match what the handleLogin functions use
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function handleLogin() {
+    console.log("Login attempt..."); // Check your console to see if this appears
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    if(!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+    }
+
+    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+    
+    if (error) {
+        alert(error.message);
+    } else {
+        showApp();
+    }
+}
+
+// ... rest of the functions (handleSignup, generateSkill) remain the sameconsole.log("MiniMaster Script Loaded Successfully!");
 
 let shotsLeft = parseInt(localStorage.getItem('dailyShots'));
 if (isNaN(shotsLeft)) shotsLeft = 2;

@@ -1,52 +1,54 @@
-// 1. INITIALIZE SUPABASE
+// 1. SUPABASE CONFIGURATION
 const supabaseUrl = 'https://pdmzwlsexixrbuiacyrr.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkbXp3bHNleGl4cmJ1aWFjeXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MDA1NDksImV4cCI6MjA4OTA3NjU0OX0.RoEyvgvLLGfwQ8kDp1N9xsJuXyC_In0hjdWRCzw3uHM';
-
 let _supabase;
 
-// Wait for the library to be ready
+// 2. VAL TOWN CONFIGURATION
+const valTownURL = "https://amir01mk4--a3a958c41f1011f1ae3842dde27851f2.web.val.run"; 
+
+// 3. COURSE STATE MANAGEMENT
+let currentCourseData = null;
+let activeDay = 0;
+
 window.onload = () => {
     _supabase = supabase.createClient(supabaseUrl, supabaseKey);
     checkUser();
 };
 
-// 2. CHECK SESSION
+// --- AUTH LOGIC ---
 async function checkUser() {
     const { data: { session } } = await _supabase.auth.getSession();
     if (session) {
-        showApp();
-    }
-}
-
-function showApp() {
-    document.getElementById('auth-overlay').style.display = 'none';
-    document.getElementById('app-content').style.display = 'block';
-}
-
-// 3. AUTH FUNCTIONS
-async function handleSignup() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    
-    const { data, error } = await _supabase.auth.signUp({ email, password });
-    
-    if (error) {
-        alert("Error: " + error.message);
-    } else {
-        alert("Success! Please check your email inbox to confirm your account before logging in.");
+        document.getElementById('auth-view').style.display = 'none';
+        document.getElementById('app-view').style.display = 'block';
     }
 }
 
 async function handleLogin() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('auth-error');
     
-    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-    
+    const { error } = await _supabase.auth.signInWithPassword({ email, password });
     if (error) {
-        alert("Login failed: " + error.message);
+        errorMsg.innerText = error.message;
+        errorMsg.style.display = 'block';
     } else {
-        showApp();
+        window.location.reload();
+    }
+}
+
+async function handleSignup() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('auth-error');
+    
+    const { error } = await _supabase.auth.signUp({ email, password });
+    if (error) {
+        errorMsg.innerText = error.message;
+        errorMsg.style.display = 'block';
+    } else {
+        alert("Account created! Please check your email to confirm, then sign in.");
     }
 }
 
@@ -55,22 +57,20 @@ async function handleLogout() {
     window.location.reload();
 }
 
-// 4. AI SKILL GENERATOR
-let shotsLeft = parseInt(localStorage.getItem('dailyShots')) || 2;
-const valTownURL = "https://amir01mk4-untitled_463.web.val.run"; 
-
+// --- CORE APP LOGIC ---
 async function generateSkill() {
-    const button = document.getElementById('action-btn');
-    const resultBox = document.getElementById('result-box');
+    const btn = document.getElementById('action-btn');
     const category = document.getElementById('category').value;
-
-    if (shotsLeft <= 0) {
-        alert("Daily limit reached! Master your current skills and come back tomorrow.");
-        return;
-    }
-
-    button.innerText = "Consulting AI...";
-    button.disabled = true;
+    const resultsContainer = document.getElementById('results-container');
+    const courseContent = document.getElementById('course-content');
+    
+    // Reset UI
+    btn.innerText = "Architecting...";
+    btn.disabled = true;
+    resultsContainer.style.display = "none";
+    courseContent.style.display = "none";
+    document.getElementById('course-btn').style.display = "inline-block";
+    activeDay = 0; // Reset course progress
 
     try {
         const response = await fetch(valTownURL, {
@@ -82,18 +82,57 @@ async function generateSkill() {
         const data = await response.json();
         if (data.error) throw new Error(data.error);
 
-        shotsLeft--;
-        localStorage.setItem('dailyShots', shotsLeft);
+        // Store the data globally so the Course UI can use it
+        currentCourseData = data;
+
+        // Populate the Skill and Description boxes
+        document.getElementById('ui-skill-name').innerText = data.skillName;
+        document.getElementById('ui-skill-desc').innerText = data.description;
         
-        resultBox.style.display = "block";
-        resultBox.innerHTML = data.result; 
-        
-        const shotsDisplay = document.getElementById('shots-display');
-        if (shotsDisplay) shotsDisplay.innerText = `Daily Shots Left: ${shotsLeft}`;
+        // Pre-fill the hidden course days
+        document.getElementById('ui-day-1').innerText = data.day1;
+        document.getElementById('ui-day-2').innerText = data.day2;
+        document.getElementById('ui-day-3').innerText = data.day3;
+
+        // Show Results
+        resultsContainer.style.display = "block";
+
     } catch (error) {
-        alert("Connection error: " + error.message);
+        alert("Connection failed: " + error.message);
     } finally {
-        button.innerText = "Give Me a Skill";
-        button.disabled = false;
+        btn.innerText = "Architect Syllabus";
+        btn.disabled = false;
+    }
+}
+
+// --- PROGRESSIVE REVEAL LOGIC ---
+function startCourse() {
+    document.getElementById('course-btn').style.display = 'none';
+    document.getElementById('course-content').style.display = 'block';
+    
+    // Hide all days initially
+    document.getElementById('day-1-box').style.display = 'none';
+    document.getElementById('day-2-box').style.display = 'none';
+    document.getElementById('day-3-box').style.display = 'none';
+    
+    document.getElementById('next-day-btn').style.display = 'block';
+    document.getElementById('next-day-btn').innerText = "Reveal Day 1";
+    activeDay = 0;
+}
+
+function revealNextDay() {
+    activeDay++;
+    
+    if (activeDay === 1) {
+        document.getElementById('day-1-box').style.display = 'block';
+        document.getElementById('next-day-btn').innerText = "Complete Day 1 to Reveal Day 2";
+    } 
+    else if (activeDay === 2) {
+        document.getElementById('day-2-box').style.display = 'block';
+        document.getElementById('next-day-btn').innerText = "Complete Day 2 to Reveal Day 3";
+    } 
+    else if (activeDay === 3) {
+        document.getElementById('day-3-box').style.display = 'block';
+        document.getElementById('next-day-btn').style.display = 'none'; // End of course
     }
 }

@@ -3,65 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniMaster AI | 3-Day Skill Challenge</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>MiniMaster Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-    <div id="auth-overlay">
+    <div id="auth-view" class="auth-wrapper">
         <div class="auth-card">
-            <h1>MiniMaster <span class="ai-badge">AI</span></h1>
-            <p>Master any micro-skill in 3 days. Log in to start your journey.</p>
-            
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Email Address">
-                <input type="password" id="password" placeholder="Password">
+            <div class="auth-header">
+                <h2>MiniMaster <span class="badge">PRO</span></h2>
+                <p>Sign in to unlock your daily curriculum.</p>
             </div>
-
-            <div class="auth-buttons">
-                <button class="login-btn" onclick="handleLogin()">Log In</button>
-                <button class="signup-btn" onclick="handleSignup()">Sign Up</button>
+            <div class="auth-form">
+                <input type="email" id="email" placeholder="name@company.com">
+                <input type="password" id="password" placeholder="••••••••">
+                <button class="btn-primary" onclick="handleLogin()">Sign In</button>
+                <button class="btn-secondary" onclick="handleSignup()">Create Account</button>
             </div>
-            <p id="auth-error" class="error-text"></p>
+            <p id="auth-error" class="error-msg"></p>
         </div>
     </div>
 
-    <div id="app-content" style="display: none;">
-        <nav class="navbar">
-            <div class="logo">MiniMaster</div>
-            <button class="logout-link" onclick="handleLogout()">Logout</button>
+    <div id="app-view" style="display: none;">
+        <nav class="top-nav">
+            <div class="logo">MiniMaster <span class="badge">PRO</span></div>
+            <button class="btn-text" onclick="handleLogout()">Sign Out</button>
         </nav>
 
-        <div class="container">
-            <header>
-                <h1>3-Day Skill Challenge</h1>
-                <p>Select a category and let AI build your custom mastery plan.</p>
+        <main class="dashboard">
+            <header class="dash-header">
+                <h1>Generate Your Syllabus</h1>
+                <p>Select a discipline to master today.</p>
             </header>
 
-            <div class="card">
-                <div class="input-group">
-                    <label for="category">Category</label>
-                    <select id="category">
-                        <option value="Digital Entrepreneurship">Digital Entrepreneurship</option>
-                        <option value="AI & Productivity">AI & Productivity</option>
-                        <option value="Psychology & Sales">Psychology & Sales</option>
-                        <option value="Creative Skills">Creative Skills</option>
-                        <option value="Survival & Life Hacks">Survival & Life Hacks</option>
-                    </select>
-                </div>
-
-                <button id="action-btn" class="primary-btn" onclick="generateSkill()">
-                    Give Me a Skill
-                </button>
-                
-                <p id="shots-display" class="shots-counter">Daily Shots Left: 2</p>
+            <div class="control-panel">
+                <select id="category" class="premium-select">
+                    <option value="Digital Audience Building">Digital Audience Building</option>
+                    <option value="High-Ticket Sales">High-Ticket Sales</option>
+                    <option value="AI Automation workflows">AI Automation Workflows</option>
+                    <option value="Copywriting Psychology">Copywriting Psychology</option>
+                </select>
+                <button id="action-btn" class="btn-primary" onclick="generateSkill()">Architect Syllabus</button>
             </div>
 
-            <div id="result-box" class="skill-result-card" style="display: none;"></div>
-        </div>
+            <div id="results-container" style="display: none;">
+                <div class="card skill-card">
+                    <h3 id="ui-skill-name">Skill Name</h3>
+                </div>
+                
+                <div class="card desc-card">
+                    <h4>Why it matters</h4>
+                    <p id="ui-skill-desc">Description goes here.</p>
+                </div>
+
+                <div class="course-controls">
+                    <button id="course-btn" class="btn-accent" onclick="startCourse()">Unlock 3-Day Course</button>
+                </div>
+
+                <div id="course-content" class="course-container" style="display: none;">
+                    <div id="day-1-box" class="day-box" style="display: none;">
+                        <span class="day-label">Day 1</span>
+                        <p id="ui-day-1"></p>
+                    </div>
+                    <div id="day-2-box" class="day-box" style="display: none;">
+                        <span class="day-label">Day 2</span>
+                        <p id="ui-day-2"></p>
+                    </div>
+                    <div id="day-3-box" class="day-box" style="display: none;">
+                        <span class="day-label">Day 3</span>
+                        <p id="ui-day-3"></p>
+                    </div>
+                    
+                    <button id="next-day-btn" class="btn-secondary mt-15" onclick="revealNextDay()">Reveal Next Day</button>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script src="script.js"></script>
